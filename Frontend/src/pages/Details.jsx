@@ -1,4 +1,4 @@
-import { useState, useEffect, CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
@@ -9,12 +9,12 @@ import HashLoader from "react-spinners/HashLoader";
 import noimg from "../assets/no-image.png";
 
 function Details() {
-  const [item, setItem] = useState("");
+  const [item, setItem] = useState(""); 
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
   const { id } = useParams();
 
-  const override: CSSProperties = {
+  const override = {
     display: "block",
     borderColor: "#fdf004",
     position: "absolute",
@@ -37,15 +37,22 @@ function Details() {
         setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
-  axios.get(`${api}/files/${item.image}`).then((res) => {
-    console.log(res);
-    setImage(`${api}/files/${item.image}`)
-  }).catch((error) => {
-        console.log(error);
-      setImage(noimg);
-    });
+  useEffect(() => {
+    if (item.image) {
+      axios
+        .get(`${api}/files/${item.image}`)
+        .then((res) => {
+          console.log(res);
+          setImage(`${api}/files/${item.image}`);
+        })
+        .catch((error) => {
+          console.log(error);
+          setImage(noimg);
+        });
+    }
+  }, [item.image]);
 
   return (
     <main id="detailspage">
@@ -79,17 +86,7 @@ function Details() {
               <p>Founder</p>
               <p>{item.name}</p>
             </div>
-
-            {/* <div className="details-container">
-            <p>Email</p>
-            <p>arjuncvinod@mail.com</p>
-          </div>
-          <div className="details-container">
-            <p>Phone</p>
-            <p>8494865475</p>
-          </div> */}
             <div className="details-container desc">
-              {/* <p>Description</p> */}
               <p>{item.description}</p>
             </div>
           </div>
